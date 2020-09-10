@@ -1,0 +1,18 @@
+import * as functions from 'firebase-functions';
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import * as dashboard from '../controllers/dashboard.controller';
+const cors = require('cors');
+
+const main = express();
+
+main.use(cors({ origin: true }));
+
+// add routes here
+main.use('/', dashboard);
+
+main.use(bodyParser.json());
+main.use(bodyParser.urlencoded({ extended: false }));
+
+// exporting all auth endpoints
+exports.dashboard = functions.https.onRequest(main);
