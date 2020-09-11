@@ -8,7 +8,6 @@ app.post("/registerUser", (request, response) => {
   const body = request.body.form;
   const id = request.body.id;
   const node = request.body.node;
-  console.log(id, node, body)
 
   if (id) {
     if (node === "mobilevictim") {
@@ -147,11 +146,21 @@ app.post("/registerIncident", (request, response) => {
             return ormModel
               .remove("/SOSCalls/" + city + "/" + sosCallId)
               .then(() => {
-                return response.send({ msg: "Incident Reported" });
-              })
-              .catch((error: any) => {
-                return response.status(400).send({ code: error.message });
-              });
+                ormModel.once('/SOSCalls/' + city)
+                  .then((snap: any) => {
+                    if (snap) {
+                      const keys = Object.keys(snap);
+                      const calls = [];
+                      for (const key of keys) {
+                        calls.push({ ...snap[key], nodeID: key });
+                        if (calls.length === keys.length) response.send(calls);
+                      }
+                      return response.send(calls)
+                    } else {
+                      return response.send(null);
+                    }
+                  }).catch((error: any) => { return response.status(400).send({ code: error.message }); });
+              }).catch((error: any) => { return response.status(400).send({ code: error.message }); });
           } else {
             return response.send({ msg: "Incident Reported" });
           }
