@@ -32,8 +32,10 @@ app.post("/registerUser", (request, response) => {
   } else {
     ormModel
       .push("/usersWeb/", body)
-      .then(() => {
-        return response.send({ msg: "User Added!" });
+      .then((res: any) => {
+        // console.log(res['path'].pieces_[1]);
+        const id = res['path'].pieces_[1];
+        return response.send({ id: id, node: "webvictim" });
       })
       .catch((error: any) => {
         return response.status(400).send({ code: error.message });

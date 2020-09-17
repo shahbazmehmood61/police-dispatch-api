@@ -18,7 +18,7 @@ export class ORMModel {
   once(url: string) {
     return new Promise((resolve, reject) => {
       return db.ref(url).once("value", (snap: any) => {
-        console.log(snap.val());
+        // console.log(snap.val());
         resolve(snap.val());
       },
         (error) => {

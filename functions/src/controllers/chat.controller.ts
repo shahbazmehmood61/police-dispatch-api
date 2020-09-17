@@ -24,7 +24,7 @@ app.get('/getMessage/:chatID', (request, response) => {
 
 app.get('/getChatRoomIDs/:uid', (request, response) => {
     const uid = request.params.uid;
-
+    // console.log(uid);
     return ormModel.once('/singleChatRoomUsers/' + uid)
         .then((snapshot: any) => {
             if (snapshot) {
@@ -38,6 +38,7 @@ app.get('/getChatRoomIDs/:uid', (request, response) => {
                             const resp = snap;
                             for (const memberKey of Object.keys(resp.members)) {
                                 if (memberKey !== uid) {
+                                    console.log(memberKey);
                                     chatIDs.push({
                                         chatID: snapshot[key],
                                         chatNodeID: key,
@@ -89,16 +90,20 @@ app.post('/genrateChatRoomIDs', (request, response) => {
                             .catch((error: any) => { return response.status(400).send({ code: error.message }); });
                         ormModel.push('/singleChatRoomUsers/' + body.senderID, snap.key)
                             .then((senderSnap: any) => {
-                                if (i) {
-                                    resolve(senderSnap.key);
-                                }
+                                ormModel.remove('/SOSChats/NewYork/' + body.sosChatID).then(() => {
+                                    if (i) {
+                                        resolve(senderSnap.key);
+                                    }
+                                })
                             }).catch((error: any) => { return response.status(400).send({ code: error.message }); });
                     }).then((chatNodeID: any) => {
                         return response.send({
                             chatID: snap.key,
                             chatNodeID: chatNodeID,
                             lastMsg: '',
+                            // reciverID: body.senderID,
                             reciverID: body.reciverID,
+                            // reciverName: initChatRoom.members[body.senderID],
                             reciverName: initChatRoom.members[body.reciverID],
                             timeStamp: '',
                             picture: userRecord.photoURL ? userRecord.photoURL : 'https://ptetutorials.com/images/user-profile.png'
@@ -252,29 +257,29 @@ app.get('/getGroups/:UID', (request, response) => {
         .catch(() => { return response.status(400).send({ code: 'No chat Room' }); });
 });
 
-app.get('/getGroupMessages/:GID', (request, response) => {
-    const GID = request.params.GID;
+// app.get('/getGroupMessages/:GID', (request, response) => {
+//     const GID = request.params.GID;
 
-    ormModel.once('/groupMessage/' + GID)
-        .then((snapShot: any) => {
-            ormModel.once('/groupDetail/' + GID + '/members')
-                .then((snap: any) => {
-                    const members: any[] = [];
-                    let i = 1;
-                    for (const memberID of snap) {
-                        ormAuth.getUser(memberID)
-                            .then((userRecord: any) => {
-                                members.push({ email: userRecord.email, uid: memberID });
+//     ormModel.once('/groupMessage/' + GID)
+//         .then((snapShot: any) => {
+//             ormModel.once('/groupDetail/' + GID + '/members')
+//                 .then((snap: any) => {
+//                     const members: any[] = [];
+//                     let i = 1;
+//                     for (const memberID of snap) {
+//                         ormAuth.getUser(memberID)
+//                             .then((userRecord: any) => {
+//                                 members.push({ email: userRecord.email, uid: memberID });
 
-                                if (i === snap.length)
-                                    return response.send({ members: members, messages: snapShot });
-                                return i++;
-                            }).catch((error: any) => { return response.status(400).send({ code: error.message }); });
-                    }
+//                                 if (i === snap.length)
+//                                     return response.send({ members: members, messages: snapShot });
+//                                 return i++;
+//                             }).catch((error: any) => { return response.status(400).send({ code: error.message }); });
+//                     }
 
-                }).catch((error: any) => { return response.status(400).send({ code: error.message }); });
-        }).catch((error: any) => { return response.status(400).send({ code: error.message }); });
-});
+//                 }).catch((error: any) => { return response.status(400).send({ code: error.message }); });
+//         }).catch((error: any) => { return response.status(400).send({ code: error.message }); });
+// });
 
 // ============ Close Chat
 app.post('/closeChat', (request, response) => {
