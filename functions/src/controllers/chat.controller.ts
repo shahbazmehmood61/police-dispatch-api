@@ -94,7 +94,7 @@ app.post('/genrateChatRoomIDs', (request, response) => {
                                     if (i) {
                                         resolve(senderSnap.key);
                                     }
-                                })
+                                }).catch((error: any) => { return response.status(400).send({ code: error.message }); });
                             }).catch((error: any) => { return response.status(400).send({ code: error.message }); });
                     }).then((chatNodeID: any) => {
                         return response.send({

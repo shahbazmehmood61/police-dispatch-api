@@ -34,8 +34,8 @@ app.post("/registerUser", (request, response) => {
       .push("/usersWeb/", body)
       .then((res: any) => {
         // console.log(res['path'].pieces_[1]);
-        const id = res['path'].pieces_[1];
-        return response.send({ id: id, node: "webvictim" });
+        const ID = res['path'].pieces_[1];
+        return response.send({ id: ID, node: "webvictim" });
       })
       .catch((error: any) => {
         return response.status(400).send({ code: error.message });
