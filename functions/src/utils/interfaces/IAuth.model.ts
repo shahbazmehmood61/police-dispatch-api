@@ -3,6 +3,7 @@ export interface IRegisterOfficer {
     email: string;
     lat: number;
     lng: number;
-    city: string;
+    // city: string;
     cityCode: string;
+    role: string
 }
