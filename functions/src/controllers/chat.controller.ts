@@ -90,7 +90,7 @@ app.post('/genrateChatRoomIDs', (request, response) => {
                             .catch((error: any) => { return response.status(400).send({ code: error.message }); });
                         ormModel.push('/singleChatRoomUsers/' + body.senderID, snap.key)
                             .then((senderSnap: any) => {
-                                ormModel.remove('/SOSChats/NewYork/' + body.sosChatID).then(() => {
+                                ormModel.remove('/SOSChats/Guaynabo/' + body.sosChatID).then(() => {
                                     if (i) {
                                         resolve(senderSnap.key);
                                     }

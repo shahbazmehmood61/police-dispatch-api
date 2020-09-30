@@ -75,8 +75,9 @@ app.post('/registerOfficer', (request, response) => {
         email: body.email,
         lat: body.lat,
         lng: body.lng,
-        city: body.city,
-        cityCode: body.cityCode
+        // city: body.city,
+        cityCode: body.cityCode,
+        role: body.role
     }
 
     authModel.registerOfficer(body, register)
